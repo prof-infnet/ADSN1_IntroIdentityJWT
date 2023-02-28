@@ -13,5 +13,7 @@ namespace IntroIdentityJWT.Data
         }
 
         public DbSet<Student> Students { get; set; }
+
+        public DbSet<IntroIdentityJWT.Models.Product> Product { get; set; }
     }
 }
