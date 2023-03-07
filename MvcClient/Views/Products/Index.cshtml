@@ -46,9 +46,15 @@
                 </td>
 
                 <td>
-                    @Html.ActionLink("Update", "Update", new { id=item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    <a asp-action="Update" asp-route-id="@item.Id">
+                        <img src="/icon/edit.png" height="16" width="16" />
+                    </a>
+                </td>
+                <td>
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" value="@item.Id" name="productId" />
+                        <input type="image" height="16" width="16" src="/icon/close.ico" />
+                    </form>
                 </td>
             </tr>
 

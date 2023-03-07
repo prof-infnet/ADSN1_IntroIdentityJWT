@@ -86,6 +86,8 @@ builder.Services.AddSwaggerGen(option =>
         });
 });
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -97,12 +99,21 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
+app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers(); 
+});
+
+app.UseCors(builder =>
+{
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
 });
 
 app.Run();

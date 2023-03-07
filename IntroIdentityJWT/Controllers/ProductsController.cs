@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace IntroIdentityJWT.Controllers
 {
+    [Authorize]
     
     [Route("api/[controller]")]
     [ApiController]
@@ -67,7 +68,7 @@ namespace IntroIdentityJWT.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
 
         // POST: api/Products

@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using MvcClient.Models;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace MvcClient.Controllers
@@ -13,9 +14,12 @@ namespace MvcClient.Controllers
         {
             List<Product> productList = new List<Product>();
 
-            using(var httpClient = new HttpClient())
+            var accessToken = HttpContext.Session.GetString("JWToken");
+
+            using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:5161/api/Products"))
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                using (var response = await httpClient.GetAsync("https://localhost:5001/api/Products"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
 
@@ -38,11 +42,16 @@ namespace MvcClient.Controllers
         {
             Product addProduct = new Product();
 
-            using(var httpClient = new HttpClient())
+            var accessToken = HttpContext.Session.GetString("JWToken");
+
+            using (var httpClient = new HttpClient())
             {
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
                 StringContent content = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
                 
-                using(var response = await httpClient.PostAsync("http://localhost:5161/api/Products", content))
+                using(var response = await httpClient.PostAsync("https://localhost:5001/api/Products", content))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
 
@@ -54,20 +63,18 @@ namespace MvcClient.Controllers
         }
 
 
-
-
-
-
-
-
-
         public async Task<ActionResult> Update(int id)
         {
             Product product = new Product();
-            
+
+            var accessToken = HttpContext.Session.GetString("JWToken");
+
             using (var httpClient =new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:5161/api/Products/" + id))
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                using (var response = await httpClient.GetAsync("https://localhost:5001/api/Products" + id))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     product = JsonConvert.DeserializeObject<Product>(apiResponse);
@@ -82,11 +89,18 @@ namespace MvcClient.Controllers
         {
             Product receivedProduct = new Product();
 
+            var accessToken = HttpContext.Session.GetString("JWToken");
+
             using (var httpClient =new HttpClient())
             {
+
+                
+
                 StringContent content = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
 
-                using (var response = await httpClient.PutAsync("http://localhost:5161/api/Products" + product.Id, content))
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                using (var response = await httpClient.PutAsync("https://localhost:5001/api/Products" + product.Id, content))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     ViewBag.Result = "Success";
@@ -96,49 +110,22 @@ namespace MvcClient.Controllers
             return View(receivedProduct);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // GET: ProductsController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ProductsController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int productId)
         {
-            try
+            var accessToken = HttpContext.Session.GetString("JWToken");
+
+            using (var httpClient = new HttpClient())
             {
-                return RedirectToAction(nameof(Index));
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                using (var response = await httpClient.DeleteAsync("https://localhost:5001/api/Products" + productId))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                }
             }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("Index");
         }
 
-        // GET: ProductsController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
     }
 }
