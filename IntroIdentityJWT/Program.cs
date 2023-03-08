@@ -13,12 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors();
+
 // Inicialização do EF
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection")));
 
 // Ligação do Identity com o Entity Framework
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -86,7 +88,6 @@ builder.Services.AddSwaggerGen(option =>
         });
 });
 
-builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -104,16 +105,16 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers(); 
-});
-
 app.UseCors(builder =>
 {
     builder.AllowAnyOrigin()
            .AllowAnyMethod()
            .AllowAnyHeader();
+});
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
 });
 
 app.Run();

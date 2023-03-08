@@ -66,15 +66,15 @@ namespace MvcClient.Controllers
         public async Task<ActionResult> Update(int id)
         {
             Product product = new Product();
-
             var accessToken = HttpContext.Session.GetString("JWToken");
+
 
             using (var httpClient =new HttpClient())
             {
 
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                using (var response = await httpClient.GetAsync("https://localhost:5001/api/Products" + id))
+                using (var response = await httpClient.GetAsync("http://localhost:5000/api/Products/" + id))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     product = JsonConvert.DeserializeObject<Product>(apiResponse);
@@ -93,14 +93,14 @@ namespace MvcClient.Controllers
 
             using (var httpClient =new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                
 
                 StringContent content = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
 
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+               
 
-                using (var response = await httpClient.PutAsync("https://localhost:5001/api/Products" + product.Id, content))
+                using (var response = await httpClient.PutAsync("http://localhost:5000/api/Products/" + product.Id, content))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     ViewBag.Result = "Success";
@@ -117,9 +117,9 @@ namespace MvcClient.Controllers
 
             using (var httpClient = new HttpClient())
             {
-
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                using (var response = await httpClient.DeleteAsync("https://localhost:5001/api/Products" + productId))
+
+                using (var response = await httpClient.DeleteAsync("http://localhost:5000/api/Products/" + productId))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                 }
