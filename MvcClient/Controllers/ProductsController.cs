@@ -74,7 +74,7 @@ namespace MvcClient.Controllers
 
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                using (var response = await httpClient.GetAsync("http://localhost:5000/api/Products/" + id))
+                using (var response = await httpClient.GetAsync("https://localhost:5001/api/Products/" + id))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     product = JsonConvert.DeserializeObject<Product>(apiResponse);
@@ -100,7 +100,7 @@ namespace MvcClient.Controllers
 
                
 
-                using (var response = await httpClient.PutAsync("http://localhost:5000/api/Products/" + product.Id, content))
+                using (var response = await httpClient.PutAsync("https://localhost:5001/api/Products/" + product.Id, content))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     ViewBag.Result = "Success";
@@ -119,7 +119,7 @@ namespace MvcClient.Controllers
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                using (var response = await httpClient.DeleteAsync("http://localhost:5000/api/Products/" + productId))
+                using (var response = await httpClient.DeleteAsync("https://localhost:5001/api/Products/" + productId))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                 }
